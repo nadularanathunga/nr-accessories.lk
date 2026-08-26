@@ -1,7 +1,7 @@
 {
   "name": "nr-accessories-lk-server",
   "version": "1.0.0",
-  "description": "Backend API for SmartGear.lk / nr-accessories.lk (MERN)",
+  "description": "Backend API for nr accessories.lk(MERN)",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {

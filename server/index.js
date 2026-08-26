@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 // Health check
-app.get("/", (req, res) => res.json({ status: "SmartGear.lk API is running" }));
+app.get("/", (req, res) => res.json({ status: "nr accessories.lk API is running" }));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
@@ -35,5 +35,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`SmartGear.lk API running on http://localhost:${PORT}`));
+  app.listen(PORT, () => console.log(`nr accessories.lk API running on http://localhost:${PORT}`));
 });

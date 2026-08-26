@@ -1,4 +1,4 @@
-# SmartGear.lk / nr-accessories.lk — Backend API
+# nr-accessories.lk — Backend API
 
 Express + MongoDB (Mongoose) backend for the nr-accessories.lk MERN project.
 Matches the ER diagram and collections from the Week 02 report (User, Category,
@@ -36,7 +36,7 @@ npm start
 ```
 
 Server runs at `http://localhost:5000`. Visit `http://localhost:5000/` — you
-should see `{ "status": "SmartGear.lk API is running" }`.
+should see `{ "status": "nr accessories.lk API is running" }`.
 
 ## 4. API Endpoints
 
