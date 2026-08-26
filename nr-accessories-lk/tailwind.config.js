@@ -1,5 +1,5 @@
 export default {
-  content: ['./**/*.{ts,tsx,html}'],
+  content: ['./index.html', './App.tsx', './pages/**/*.{ts,tsx}', './components/**/*.{ts,tsx}', './data/**/*.{ts,tsx}'],
   theme: {
     extend: {
       fontFamily: {
