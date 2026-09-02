@@ -21,7 +21,7 @@ exports.register = async (req, res) => {
     const token = signToken(user._id);
     res.status(201).json({
       token,
-      user: { id: user._id, name: user.name, email: user.email },
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -40,7 +40,7 @@ exports.login = async (req, res) => {
     const token = signToken(user._id);
     res.json({
       token,
-      user: { id: user._id, name: user.name, email: user.email },
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
