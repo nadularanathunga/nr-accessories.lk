@@ -10,11 +10,11 @@ const {
 
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 
-// Public Routes (ඕනෑම අයෙකුට බලන්න පුළුවන්)
+// Public Routes (Anyone can view)
 router.get("/", getProducts);
 router.get("/:id", getProductById);
 
-// Protected Admin Routes (Admin ට පමණක් සකස් කළ හැකි)
+// Protected Admin Routes (Only admins can modify)
 router.post("/", requireAuth, requireAdmin, createProduct);
 router.put("/:id", requireAuth, requireAdmin, updateProduct);
 router.delete("/:id", requireAuth, requireAdmin, deleteProduct);

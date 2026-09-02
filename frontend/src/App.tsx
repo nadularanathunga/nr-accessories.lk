@@ -45,7 +45,7 @@ export function App() {
               {/* Other admin routes can be added here later */}
             </Route>
 
-            {/* Catch-all: වෙනත් නැති Route එකකට ගියොත් Home එකට යැවීම */}
+            {/* Catch-all: Redirect to Home for unknown routes */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

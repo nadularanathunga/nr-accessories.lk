@@ -310,7 +310,7 @@ async function seed() {
     discountPrice: p.discountPrice,
     stockQuantity: p.stockQuantity,
     imageURL: p.imageURL,
-    image: p.imageURL, // Frontend එකේ image field එක image/imageURL දෙකෙන් එකක් තෝරා ගැනීමට backup එකක් ලෙස
+    image: p.imageURL, // Backup for Frontend to choose either image/imageURL
   }));
 
   await Product.insertMany(productsToInsert);

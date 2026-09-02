@@ -8,25 +8,25 @@ const getProducts = async (req, res) => {
     const { category, brand } = req.query;
     let query = {};
 
-    // 1. Category Slug එකක් pass වී ඇත්නම්:
+    // 1. If a Category Slug is passed:
     if (category) {
       const categoryDoc = await Category.findOne({ slug: category });
       
       if (categoryDoc) {
-        // Category ObjectId එකෙන් Product filter කිරීම
+        // Filter product by Category ObjectId
         query.category = categoryDoc._id;
       } else {
-        // Category එක හමු නොවුනොත් හිස් Array එකක් යැවීම
+        // Send empty array if Category is not found
         return res.json({ products: [], total: 0 });
       }
     }
 
-    // 2. Brand එකක් තිබේ නම්:
+    // 2. If a Brand is passed:
     if (brand) {
       query.brand = { $regex: brand, $options: "i" };
     }
 
-    // Products සොයා Category Detailsද සමඟ return කිරීම
+    // Find products and return with Category Details
     const products = await Product.find(query).populate("category", "name slug");
     res.json({ products, total: products.length });
   } catch (error) {

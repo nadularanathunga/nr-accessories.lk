@@ -93,8 +93,8 @@ export function toCatalogCategory(c: ApiCategory): CatalogCategory {
 export async function fetchRawProducts(params: Record<string, string> = {}): Promise<ApiProduct[]> {
   const qs = new URLSearchParams(params).toString()
   const res = await fetch(`${API_BASE}/products${qs ? '?' + qs : ''}`)
-  const data = await handle<{ data: ApiProduct[] }>(res)
-  return data.data || []
+  const data = await handle<{ products: ApiProduct[], total: number }>(res)
+  return data.products || []
 }
 
 export async function fetchProducts(params: Record<string, string> = {}): Promise<CatalogProduct[]> {
@@ -110,8 +110,8 @@ export async function fetchProductById(id: string): Promise<CatalogProduct> {
 // ---------- Categories ----------
 export async function fetchRawCategories(): Promise<ApiCategory[]> {
   const res = await fetch(`${API_BASE}/categories`)
-  const data = await handle<{ data: ApiCategory[] }>(res)
-  return data.data || []
+  const data = await handle<ApiCategory[]>(res)
+  return Array.isArray(data) ? data : []
 }
 
 export async function fetchCategories(): Promise<CatalogCategory[]> {
@@ -229,8 +229,8 @@ export async function confirmPayment(orderId: string, sessionId: string): Promis
 }
 export async function fetchRawProductById(id: string): Promise<ApiProduct> {
   const res = await fetch(`${API_BASE}/products/${id}`)
-  const data = await handle<{ data: ApiProduct }>(res)
-  return data.data
+  const data = await handle<ApiProduct>(res)
+  return data
 }
 
 // ---------- Admin Product Operations ----------

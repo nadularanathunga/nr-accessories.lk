@@ -1,6 +1,6 @@
 const Cart = require("../models/Cart");
 
-// User ID එක extract කරගන්නා helper function එකක් (Middleware වෙනස්කම් නිසා එන Issue fix කිරීමට)
+// Helper function to extract User ID (to fix issues from Middleware changes)
 const getUserId = (req) => {
   return req.userId || req.user?._id || req.user?.id || req.user;
 };
@@ -33,7 +33,7 @@ exports.addItem = async (req, res) => {
       cart = new Cart({ user: userId, items: [] });
     }
 
-    // Existing product match කරන්නේ string compare එකෙන්
+    // Match existing product using string compare
     const existingIndex = cart.items.findIndex((item) => {
       const pId = item.product?._id ? item.product._id.toString() : item.product.toString();
       return pId === productId.toString();
@@ -47,7 +47,7 @@ exports.addItem = async (req, res) => {
 
     await cart.save();
 
-    // Plain JavaScript Object එකක් විදිහට lean() කර යැවීම
+    // Send as a plain JavaScript Object using lean()
     const updatedCart = await Cart.findById(cart._id).populate("items.product").lean();
     res.json(updatedCart);
   } catch (err) {
