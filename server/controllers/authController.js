@@ -56,3 +56,33 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, phone, addresses } = req.body;
+    const user = await User.findById(req.userId);
+    
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (name) user.name = name;
+    if (phone !== undefined) user.phone = phone;
+    if (addresses) user.addresses = addresses;
+
+    await user.save();
+    
+    const updatedUser = await User.findById(req.userId).select("-passwordHash");
+    res.json({
+      user: {
+        id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        role: updatedUser.role,
+        addresses: updatedUser.addresses,
+        createdAt: updatedUser.createdAt,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

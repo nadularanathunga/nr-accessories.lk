@@ -120,7 +120,7 @@ export async function fetchCategories(): Promise<CatalogCategory[]> {
 }
 
 // ---------- Auth ----------
-export type AuthUser = { id: string; name: string; email: string; role?: string }
+export type AuthUser = { id: string; name: string; email: string; phone?: string; addresses?: any[]; role?: string; createdAt?: string }
 
 export async function login(email: string, password: string): Promise<AuthUser> {
   const res = await fetch(`${API_BASE}/auth/login`, {
@@ -142,6 +142,15 @@ export async function register(name: string, email: string, password: string, ph
   const data = await handle<{ token: string; user: AuthUser }>(res)
   localStorage.setItem('sg_token', data.token)
   return data.user
+}
+
+export async function updateProfile(payload: { name?: string; phone?: string; addresses?: any[] }): Promise<{ user: AuthUser }> {
+  const res = await fetch(`${API_BASE}/auth/me`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify(payload),
+  })
+  return handle<{ user: AuthUser }>(res)
 }
 
 export function logout() {

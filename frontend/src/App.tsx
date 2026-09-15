@@ -10,6 +10,9 @@ import { Cart } from './pages/Cart'
 import { Checkout } from './pages/Checkout'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
+import { Profile } from './pages/Profile'
+import { ProtectedRoute } from './components/ProtectedRoute'
+
 
 import { PaymentSuccess } from './pages/PaymentSuccess'
 import { PaymentCancel } from './pages/PaymentCancel'
@@ -32,7 +35,10 @@ export function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
+            
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/payment-cancel" element={<PaymentCancel />} />
             

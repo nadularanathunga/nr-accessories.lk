@@ -29,8 +29,7 @@ export function SiteHeader() {
 
   function handleAccountClick() {
     if (isAuthenticated) {
-      logout()
-      navigate('/')
+      navigate('/profile')
     } else {
       navigate('/login')
     }
@@ -138,7 +137,7 @@ export function SiteHeader() {
               className="hidden items-center gap-2 rounded-xl px-2 py-2 text-[13px] font-medium text-ink-soft transition-colors duration-150 ease-soft hover:text-brand-700 lg:flex"
             >
               <UserIcon className="h-5 w-5" aria-hidden="true" />
-              {isAuthenticated ? 'Sign out' : 'Sign in'}
+              {isAuthenticated ? 'My Profile' : 'Sign in'}
             </button>
             {user?.role === 'admin' && (
               <Link
