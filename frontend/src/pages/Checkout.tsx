@@ -46,10 +46,60 @@ export function Checkout() {
       
       if (PAYMENT_METHODS[payment].id === 'card') {
         const session = await createCheckoutSession(order._id);
-        window.location.href = session.url;
+        
+        const paymentDetails = {
+            "sandbox": true,
+            "merchant_id": session.merchant_id,
+            "return_url": window.location.origin + "/payment-success?order_id=" + order._id,
+            "cancel_url": window.location.origin + "/payment-cancel?order_id=" + order._id,
+            "notify_url": "http://localhost:5000/api/payment/confirm", 
+            "order_id": session.order_id,
+            "items": session.items,
+            "amount": session.amount,
+            "currency": session.currency,
+            "hash": session.hash,
+            "first_name": session.first_name,
+            "last_name": session.last_name,
+            "email": session.email,
+            "phone": session.phone,
+            "address": session.address,
+            "city": session.city,
+            "country": session.country
+        };
+
+        const payhere = (window as any).payhere;
+        
+        payhere.onCompleted = async function onCompleted(orderId: string) {
+            console.log("Payment completed. OrderID:" + orderId);
+            // We call confirm API (since notify_url usually requires a public IP/ngrok)
+            try {
+              const token = localStorage.getItem('token');
+              await fetch('http://localhost:5000/api/payment/confirm', {
+                  method: 'POST',
+                  headers: { 
+                      'Content-Type': 'application/json',
+                      ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                  },
+                  body: JSON.stringify({ orderId: order._id })
+              });
+            } catch(e) {}
+            navigate(`/payment-success?order_id=${order._id}`);
+        };
+
+        payhere.onDismissed = function onDismissed() {
+            console.log("Payment dismissed");
+            setSubmitting(false);
+        };
+
+        payhere.onError = function onError(error: any) {
+            console.log("Error:"  + error);
+            alert("Payment failed: " + error);
+            setSubmitting(false);
+        };
+        
+        payhere.startPayment(paymentDetails);
         return;
       }
-
       alert('Order placed successfully!')
       navigate('/')
     } catch (err: any) {

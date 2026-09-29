@@ -1,8 +1,9 @@
-const Stripe = require("stripe");
 const Order = require("../models/Order");
+const crypto = require("crypto");
 
-// Use a test key or environment variable.
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_51O9X...dummy_test_key_for_demo_purposes...');
+// Using user-provided Merchant credentials for PayHere
+const MERCHANT_ID = "1238362";
+const MERCHANT_SECRET = "MzEwODg5Mjc0NDI3Mjg2MjU4NDUwMTc4NTI5NDQ2ODg1NTI5OQ==";
 
 async function createCheckoutSession(req, res) {
   try {
@@ -23,44 +24,40 @@ async function createCheckoutSession(req, res) {
       return res.status(400).json({ message: "Order is already paid" });
     }
 
-    const lineItems = order.items.map(item => ({
-      price_data: {
-        currency: 'lkr',
-        product_data: {
-          name: item.product.title,
-          images: item.product.imageURL ? [item.product.imageURL] : [],
-        },
-        unit_amount: Math.round(item.unitPrice * 100), // Stripe expects cents/smallest currency unit
-      },
-      quantity: item.quantity,
-    }));
-
-    // Add delivery fee if applicable
-    if (order.deliveryMethod === 'cash_on_delivery') {
-       lineItems.push({
-         price_data: {
-           currency: 'lkr',
-           product_data: { name: 'Handling Fee' },
-           unit_amount: 350 * 100,
-         },
-         quantity: 1,
-       });
-    }
-
-    // Frontend URL
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: lineItems,
-      mode: 'payment',
-      success_url: `${frontendUrl}/payment-success?session_id={CHECKOUT_SESSION_ID}&order_id=${orderId}`,
-      cancel_url: `${frontendUrl}/payment-cancel?order_id=${orderId}`,
-      client_reference_id: orderId,
-      customer_email: req.user.email,
+    let amount = 0;
+    order.items.forEach(item => {
+      amount += (item.unitPrice * item.quantity);
     });
 
-    res.json({ url: session.url, sessionId: session.id });
+    if (order.deliveryMethod === 'cash_on_delivery') {
+       amount += 350;
+    }
+
+    // Format amount to 2 decimal places as required by PayHere
+    const amountFormatted = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: false });
+    const currency = 'LKR';
+
+    // Generate MD5 Hash
+    const hashedSecret = crypto.createHash('md5').update(MERCHANT_SECRET).digest('hex').toUpperCase();
+    const hashString = MERCHANT_ID + orderId + amountFormatted + currency + hashedSecret;
+    const hash = crypto.createHash('md5').update(hashString).digest('hex').toUpperCase();
+
+    // Frontend needs these details to initiate PayHere
+    res.json({ 
+      hash, 
+      merchant_id: MERCHANT_ID,
+      order_id: orderId,
+      items: order.items.map(i => i.product.title).join(", "),
+      amount: amountFormatted,
+      currency: currency,
+      first_name: req.user ? req.user.name : "Customer",
+      last_name: "",
+      email: req.user ? req.user.email : "customer@example.com",
+      phone: "0771234567", // Can be dynamic if you have a phone field
+      address: order.deliveryAddress ? order.deliveryAddress.addressLine1 : "No Address",
+      city: order.deliveryAddress ? order.deliveryAddress.city : "Colombo",
+      country: "Sri Lanka"
+    });
   } catch (err) {
     res.status(500).json({ message: err.message || "Failed to create checkout session" });
   }
@@ -68,29 +65,8 @@ async function createCheckoutSession(req, res) {
 
 async function confirmPayment(req, res) {
   try {
-    const { orderId, sessionId } = req.body;
+    const { orderId } = req.body;
     
-    // In a real app, verify the session with Stripe using the sessionId
-    // For demo/simplicity, we just mark the order as paid if this route is called with the order ID.
-    // However, since we return the orderId in success_url, let's just trust it for now (or ideally check session).
-    
-    let isPaid = true;
-    if (sessionId) {
-      try {
-         const session = await stripe.checkout.sessions.retrieve(sessionId);
-         if (session.payment_status !== 'paid') {
-           isPaid = false;
-         }
-      } catch (e) {
-         console.warn("Could not verify Stripe session", e);
-         // Continuing for demo purposes if session retrieve fails due to dummy key
-      }
-    }
-
-    if (!isPaid) {
-      return res.status(400).json({ message: "Payment not completed" });
-    }
-
     const order = await Order.findById(orderId);
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
