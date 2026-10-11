@@ -268,3 +268,33 @@ export async function deleteProductAPI(id: string) {
   })
   return handle(res)
 }
+
+// ---------- Admin Order & Dashboard Operations ----------
+export async function fetchAdminStats() {
+  const res = await fetch(`${API_BASE}/orders/admin/stats`, {
+    headers: { ...authHeaders() }
+  })
+  return handle<{
+    totalProducts: number
+    totalOrders: number
+    lowStockCount: number
+    recentOrders: any[]
+  }>(res)
+}
+
+export async function fetchAdminOrders() {
+  const res = await fetch(`${API_BASE}/orders/admin/all`, {
+    headers: { ...authHeaders() }
+  })
+  return handle<any[]>(res)
+}
+
+export async function updateOrderStatusAPI(orderId: string, status: string) {
+  const res = await fetch(`${API_BASE}/orders/admin/${orderId}/status`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ status })
+  })
+  return handle(res)
+}
+

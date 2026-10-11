@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
-import { PackageIcon, UsersIcon, SettingsIcon, LogOutIcon } from 'lucide-react'
+import { LayoutDashboardIcon, PackageIcon, ShoppingCartIcon, LogOutIcon } from 'lucide-react'
 
 export function AdminLayout() {
   const { user, logout } = useAuth()
@@ -21,10 +21,11 @@ export function AdminLayout() {
   }
 
   const navItems = [
+    { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboardIcon },
     { name: 'Products', path: '/admin/products', icon: PackageIcon },
-    { name: 'Users', path: '/admin/users', icon: UsersIcon },
-    { name: 'Settings', path: '/admin/settings', icon: SettingsIcon },
+    { name: 'Orders', path: '/admin/orders', icon: ShoppingCartIcon },
   ]
+
 
   return (
     <div className="flex min-h-screen bg-canvas">

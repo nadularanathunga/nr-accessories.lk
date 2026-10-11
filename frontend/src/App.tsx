@@ -21,6 +21,8 @@ import { AuthProvider } from './components/context/AuthContext'
 import { CartProvider } from './components/context/CartContext'
 import { AdminLayout } from './components/AdminLayout'
 import { AdminProducts } from './pages/AdminProducts'
+import { AdminDashboard } from './pages/AdminDashboard'
+import { AdminOrders } from './pages/AdminOrders'
 
 export function App() {
   return (
@@ -47,8 +49,10 @@ export function App() {
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="products" element={<AdminProducts />} />
-              {/* Other admin routes can be added here later */}
+              <Route path="orders" element={<AdminOrders />} />
             </Route>
 
             {/* Catch-all: Redirect to Home for unknown routes */}
