@@ -56,7 +56,7 @@ export function SiteHeader() {
                 <PhoneIcon className="h-3.5 w-3.5" aria-hidden="true" />
                 070 388 8085
               </span>
-              <Link to="/shop" className="hover:underline">
+              <Link to="/profile" className="hover:underline">
                 Track order
               </Link>
               <Link to="/shop" className="hover:underline">
@@ -71,19 +71,19 @@ export function SiteHeader() {
             type="button"
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
-            className="-ml-1 flex h-10 w-10 items-center justify-center rounded-xl text-ink lg:hidden"
+            className="-ml-1 flex min-h-[44px] min-w-[44px] h-11 w-11 items-center justify-center rounded-xl text-ink lg:hidden"
           >
             <MenuIcon className="h-6 w-6" aria-hidden="true" />
           </button>
 
-          <Link to="/" className="flex shrink-0 items-center gap-2">
+          <Link to="/" className="flex max-w-[75%] sm:max-w-none shrink-0 items-center gap-2">
             <span
               aria-hidden="true"
-              className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-700 font-display text-sm font-extrabold text-white sm:h-10 sm:w-10"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-700 font-display text-sm font-extrabold text-white sm:h-10 sm:w-10"
             >
               nr
             </span>
-            <span className="leading-none">
+            <span className="leading-none truncate">
               <span className="block font-display text-[15px] font-extrabold tracking-tight text-ink sm:text-lg">
                 nr accessories<span className="text-brand-700">.lk</span>
               </span>
@@ -156,7 +156,7 @@ export function SiteHeader() {
             </button>
             <Link
               to="/cart"
-              className="flex items-center gap-2 rounded-xl bg-brand-50 px-3 py-2 text-[13px] font-semibold text-brand-800 transition-colors duration-150 ease-soft hover:bg-brand-100"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center gap-2 rounded-xl bg-brand-50 px-3.5 py-2 text-[13px] font-semibold text-brand-800 transition-colors duration-150 ease-soft hover:bg-brand-100"
             >
               <span className="relative">
                 <ShoppingCartIcon className="h-5 w-5" aria-hidden="true" />

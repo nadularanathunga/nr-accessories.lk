@@ -14,12 +14,18 @@ body,
   width: 100%;
   min-height: 100%;
   background-color: #f8fafc;
+  overflow-x: hidden;
 }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
   color: #0f172a;
   -webkit-font-smoothing: antialiased;
+}
+
+img, svg, video {
+  max-width: 100%;
+  height: auto;
 }
 
 .no-scrollbar {

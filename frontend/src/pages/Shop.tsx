@@ -12,7 +12,7 @@ type SortOption = 'popular' | 'price-asc' | 'price-desc' | 'newest'
 export function Shop() {
   const [searchParams] = useSearchParams()
   const query = searchParams.get('q') || ''
-  const categoryParam = searchParams.get('c') || null
+  const categoryParam = searchParams.get('c') || searchParams.get('category') || null
   const brandParam = searchParams.get('brand') || null
 
   const [filtersOpen, setFiltersOpen] = useState(false)

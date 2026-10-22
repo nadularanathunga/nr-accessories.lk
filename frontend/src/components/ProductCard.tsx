@@ -3,29 +3,25 @@ import { Link, useNavigate } from 'react-router-dom'
 import { HeartIcon, ShoppingCartIcon, CheckIcon } from 'lucide-react'
 import { StarRating } from './StarRating'
 import type { Product } from '../data/catalog'
-import { addToCart, isLoggedIn } from '../data/api'
+import { useCart } from './context/CartContext'
 
 type ProductCardProps = {
   product: Product
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const navigate = useNavigate()
+  const { addToCart } = useCart()
   const [adding, setAdding] = useState(false)
   const [added, setAdded] = useState(false)
 
   async function handleAddToCart() {
-    if (!isLoggedIn()) {
-      navigate('/account', { state: { from: '/shop' } })
-      return
-    }
     try {
       setAdding(true)
       await addToCart(product.id, 1)
       setAdded(true)
       setTimeout(() => setAdded(false), 1500)
     } catch {
-      // Silently ignore — a failed add-to-cart shouldn't break the page.
+      // Silently ignore
     } finally {
       setAdding(false)
     }

@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const addressSchema = new mongoose.Schema({
   label: { type: String, default: "Home" },
-  addressLine1: { type: String, required: true },
-  addressLine2: { type: String },
-  city: { type: String, required: true },
-  district: { type: String, required: true },
+  addressLine1: { type: String, default: "" },
+  addressLine2: { type: String, default: "" },
+  city: { type: String, default: "" },
+  district: { type: String, default: "" },
   isDefault: { type: Boolean, default: false },
 });
 

@@ -1,14 +1,11 @@
 import React from 'react'
 
-type ButtonProps = {
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode
   variant?: 'primary' | 'secondary' | 'ghost' | 'dark'
   size?: 'sm' | 'md' | 'lg'
   fullWidth?: boolean
   className?: string
-  type?: 'button' | 'submit'
-  onClick?: () => void
-  disabled?: boolean
 }
 
 const VARIANTS: Record<string, string> = {
@@ -19,9 +16,9 @@ const VARIANTS: Record<string, string> = {
 }
 
 const SIZES: Record<string, string> = {
-  sm: 'h-9 px-3.5 text-[13px]',
-  md: 'h-11 px-5 text-sm',
-  lg: 'h-12 px-6 text-sm sm:h-14 sm:px-8 sm:text-base',
+  sm: 'min-h-[44px] h-11 px-4 text-[13px]',
+  md: 'min-h-[44px] h-11 px-5 text-sm',
+  lg: 'min-h-[48px] h-12 px-6 text-sm sm:h-14 sm:px-8 sm:text-base',
 }
 
 export function Button({
@@ -33,15 +30,19 @@ export function Button({
   type = 'button',
   onClick,
   disabled = false,
+  form,
+  ...rest
 }: ButtonProps) {
   return (
     <button
       type={type}
+      form={form}
       onClick={onClick}
       disabled={disabled}
       className={`inline-flex items-center justify-center gap-2 rounded-xl font-display font-semibold tracking-tight transition-colors duration-150 ease-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${
         VARIANTS[variant]
       } ${SIZES[size]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      {...rest}
     >
       {children}
     </button>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronRightIcon, HeartIcon, PhoneIcon, UserIcon, XIcon } from 'lucide-react'
 import { categories, navLinks } from '../data/catalog'
+import { useAuth } from './context/AuthContext'
 
 type MobileMenuProps = {
   open: boolean
@@ -10,6 +11,7 @@ type MobileMenuProps = {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const { isAuthenticated } = useAuth()
   return (
     <AnimatePresence>
       {open ? (
@@ -85,17 +87,17 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
             <div className="space-y-3 border-t border-line px-4 py-4">
               <div className="flex gap-2">
                 <Link
-                  to="/shop"
+                  to={isAuthenticated ? '/profile' : '/login'}
                   onClick={onClose}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-brand-700 py-3 text-sm font-semibold text-white"
+                  className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl bg-brand-700 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-800"
                 >
                   <UserIcon className="h-4 w-4" aria-hidden="true" />
-                  Sign in
+                  {isAuthenticated ? 'My Profile' : 'Sign in'}
                 </Link>
                 <Link
                   to="/shop"
                   onClick={onClose}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-line-strong py-3 text-sm font-semibold text-ink"
+                  className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border border-line-strong py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-canvas"
                 >
                   <HeartIcon className="h-4 w-4" aria-hidden="true" />
                   Wishlist

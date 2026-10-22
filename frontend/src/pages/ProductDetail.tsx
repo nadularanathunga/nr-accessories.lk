@@ -52,10 +52,6 @@ export function ProductDetail() {
 
   async function handleAddToCart() {
     if (!id) return
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: `/product/${id}` } })
-      return
-    }
     try {
       setAdding(true)
       await contextAddToCart(id, quantity)

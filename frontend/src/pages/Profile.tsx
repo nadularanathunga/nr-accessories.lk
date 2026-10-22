@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../components/context/AuthContext'
-import { updateProfile } from '../data/api'
+import { updateProfile, fetchProfile } from '../data/api'
 import { Button } from '../components/ui/Button'
 import { UserIcon, PhoneIcon, MapPinIcon } from 'lucide-react'
 
@@ -17,6 +17,24 @@ export function Profile() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' } | null>(null)
 
+  // Fetch fresh profile from database on mount
+  useEffect(() => {
+    fetchProfile()
+      .then((fresh) => {
+        if (fresh) {
+          setUser(fresh)
+          setName(fresh.name || '')
+          setPhone(fresh.phone || '')
+          setAddressLine1(fresh.addresses?.[0]?.addressLine1 || '')
+          setCity(fresh.addresses?.[0]?.city || '')
+          setDistrict(fresh.addresses?.[0]?.district || '')
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load profile:', err)
+      })
+  }, [])
+
   useEffect(() => {
     if (user) {
       setName(user.name || '')
@@ -32,13 +50,19 @@ export function Profile() {
     setLoading(true)
     setMessage(null)
     try {
+      const addressesPayload = (addressLine1 || city || district)
+        ? [{ addressLine1, city, district, label: 'Home' }]
+        : []
+
       const payload = {
         name,
         phone,
-        addresses: [{ addressLine1, city, district, label: 'Home' }]
+        addresses: addressesPayload
       }
       const res = await updateProfile(payload)
-      setUser(res.user)
+      if (res?.user) {
+        setUser(res.user)
+      }
       setMessage({ text: 'Profile updated successfully!', type: 'success' })
     } catch (err: any) {
       setMessage({ text: err.message || 'Failed to update profile', type: 'error' })

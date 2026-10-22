@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
-import { isLoggedIn, logout as apiLogout, type AuthUser } from '../../data/api'
+import { isLoggedIn, logout as apiLogout, fetchProfile, type AuthUser } from '../../data/api'
 
 interface AuthContextType {
   user: AuthUser | null
@@ -43,6 +43,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(authStatus)
     if (!authStatus) {
       setUser(null)
+    } else {
+      fetchProfile()
+        .then((freshUser) => {
+          if (freshUser) {
+            setUserState(freshUser)
+          }
+        })
+        .catch(() => {})
     }
   }, [])
 

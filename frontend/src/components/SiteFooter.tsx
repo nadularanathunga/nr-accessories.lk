@@ -3,9 +3,34 @@ import { Link } from 'react-router-dom'
 import { FacebookIcon, InstagramIcon, MailIcon, MapPinIcon, PhoneIcon } from 'lucide-react'
 
 const COLUMNS = [
-  { title: 'Shop', items: ['Cases & covers', 'Charging', 'Audio', 'Wearables', 'Clearance'] },
-  { title: 'Support', items: ['Track my order', 'Delivery & fees', 'Returns & warranty', 'Contact us'] },
-  { title: 'Company', items: ['About nr', 'Store locations', 'Dealer enquiries', 'Careers'] },
+  {
+    title: 'Shop',
+    items: [
+      { label: 'Cases & covers', to: '/shop?c=phone-cases' },
+      { label: 'Charging', to: '/shop?c=chargers' },
+      { label: 'Audio', to: '/shop?c=earbuds' },
+      { label: 'Wearables', to: '/shop?c=smart-watches' },
+      { label: 'Clearance Deals', to: '/shop' },
+    ],
+  },
+  {
+    title: 'Support',
+    items: [
+      { label: 'Track my order', to: '/profile' },
+      { label: 'Delivery & fees', to: '/shop' },
+      { label: 'Returns & warranty', to: '/shop' },
+      { label: 'Contact hotline', to: 'tel:0703888085' },
+    ],
+  },
+  {
+    title: 'Company',
+    items: [
+      { label: 'About nr accessories', to: '/' },
+      { label: 'Store locations', to: '/' },
+      { label: 'Dealer enquiries', to: 'mailto:pamudithanadula@gmail.com' },
+      { label: 'Warranty policy', to: '/' },
+    ],
+  },
 ]
 
 export function SiteFooter() {
@@ -23,24 +48,29 @@ export function SiteFooter() {
             <ul className="mt-4 space-y-2 text-sm text-ink-soft">
               <li className="flex items-center gap-2">
                 <PhoneIcon className="h-4 w-4 text-brand-700" aria-hidden="true" />
-                070 388 8085
+                <a href="tel:0703888085" className="hover:text-brand-700">070 388 8085</a>
               </li>
               <li className="flex items-center gap-2">
                 <MailIcon className="h-4 w-4 text-brand-700" aria-hidden="true" />
-                pamudithanadula@gmail.com
+                <a href="mailto:pamudithanadula@gmail.com" className="hover:text-brand-700">pamudithanadula@gmail.com</a>
               </li>
               <li className="flex items-center gap-2">
                 <MapPinIcon className="h-4 w-4 text-brand-700" aria-hidden="true" />
-                128/D,Helummahara,Dekatana
+                128/D, Helummahara, Dekatana
               </li>
             </ul>
             <div className="mt-4 flex gap-2">
-              {[FacebookIcon, InstagramIcon].map((Icon, index) => (
+              {[
+                { Icon: FacebookIcon, label: 'Facebook', href: 'https://facebook.com' },
+                { Icon: InstagramIcon, label: 'Instagram', href: 'https://instagram.com' },
+              ].map(({ Icon, label, href }) => (
                 <a
-                  key={index}
-                  href="#"
-                  aria-label={index === 0 ? 'Facebook' : 'Instagram'}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-line text-ink-soft transition-colors duration-150 ease-soft hover:border-brand-600 hover:text-brand-700"
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full border border-line text-ink-soft transition-colors duration-150 ease-soft hover:border-brand-600 hover:text-brand-700"
                 >
                   <Icon className="h-4 w-4" aria-hidden="true" />
                 </a>
@@ -53,13 +83,22 @@ export function SiteFooter() {
               <h2 className="font-display text-sm font-bold text-ink">{column.title}</h2>
               <ul className="mt-3 space-y-2.5">
                 {column.items.map((item) => (
-                  <li key={item}>
-                    <Link
-                      to="/shop"
-                      className="text-sm text-ink-soft transition-colors duration-150 ease-soft hover:text-brand-700"
-                    >
-                      {item}
-                    </Link>
+                  <li key={item.label}>
+                    {item.to.startsWith('tel:') || item.to.startsWith('mailto:') ? (
+                      <a
+                        href={item.to}
+                        className="text-sm text-ink-soft transition-colors duration-150 ease-soft hover:text-brand-700"
+                      >
+                        {item.label}
+                      </a>
+                    ) : (
+                      <Link
+                        to={item.to}
+                        className="text-sm text-ink-soft transition-colors duration-150 ease-soft hover:text-brand-700"
+                      >
+                        {item.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
