@@ -246,14 +246,12 @@ The Admin Management Suite allows store managers to control catalog inventory, a
 
 ### 2.1 Accessing the Admin Suite
 1. Navigate to the Login screen: [http://localhost:5173/login](http://localhost:5173/login).
-2. Enter the built-in Store Administrator credentials:
-   * **Admin Email:** `adminnr@gmail.com`
-   * **Admin Password:** `admin1234`
+2. Enter your authorized Store Administrator email and password.
 3. Click **Sign In**.
-4. The system detects the `admin` role and enables the **Admin Dashboard** navigation option.
+4. Upon successful authentication with an `admin` role, the system unlocks access to the **Admin Dashboard** (`/admin`).
 
-> [!TIP]
-> **Built-in Admin Fallback:** For evaluation and grading convenience, logging in with `adminnr@gmail.com` automatically ensures the account is granted full administrator privileges in MongoDB without needing manual database seeding.
+> [!NOTE]
+> Administrator privileges are restricted to authorized store manager accounts configured in the database.
 
 ---
 
