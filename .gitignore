@@ -14,9 +14,11 @@ build/
 .env.test.local
 .env.production.local
 
-# OS Generated Files
+# OS Generated & Office Temp Files
 .DS_Store
 Thumbs.db
+~$*.doc*
+~$*.docx
 
 # Logs
 npm-debug.log*
