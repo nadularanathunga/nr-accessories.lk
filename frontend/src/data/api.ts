@@ -5,7 +5,7 @@
 import { images, type Product as CatalogProduct, type Category as CatalogCategory } from './catalog'
 
 // Change this if your backend runs on a different port/host.
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5001/api'
+const API_BASE = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5001/api'
 
 // ---------- Shapes returned by the backend ----------
 export type ApiCategory = {
@@ -260,11 +260,11 @@ export async function createCheckoutSession(orderId: string): Promise<{ url: str
   return handle(res)
 }
 
-export async function confirmPayment(orderId: string, sessionId: string): Promise<{ success: boolean }> {
+export async function confirmPayment(orderId: string, sessionId?: string): Promise<{ success: boolean }> {
   const res = await fetch(`${API_BASE}/payment/confirm`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...authHeaders() },
-    body: JSON.stringify({ orderId, sessionId }),
+    body: JSON.stringify({ orderId, sessionId: sessionId || undefined }),
   })
   return handle(res)
 }

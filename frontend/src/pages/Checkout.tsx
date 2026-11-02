@@ -157,6 +157,9 @@ export function Checkout() {
           )
         }
 
+        // Save last placed order ID to prevent verification failure on page refresh
+        localStorage.setItem('last_placed_order_id', orderId)
+
         const paymentDetails = {
           sandbox: true,
           merchant_id: merchantId,

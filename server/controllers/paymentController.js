@@ -70,6 +70,9 @@ async function createCheckoutSession(req, res) {
 async function confirmPayment(req, res) {
   try {
     const { orderId } = req.body;
+    if (!orderId) {
+      return res.status(400).json({ message: "Order ID is required" });
+    }
     
     const order = await Order.findById(orderId);
     if (!order) {
@@ -77,6 +80,9 @@ async function confirmPayment(req, res) {
     }
 
     order.paymentStatus = 'paid';
+    if (!order.orderStatus || order.orderStatus === 'pending') {
+      order.orderStatus = 'processing';
+    }
     await order.save();
 
     res.json({ success: true, order });
